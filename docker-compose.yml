@@ -1,0 +1,19 @@
+services:
+  api:
+    build: .
+    ports:
+      - "80:80"
+    depends_on:
+      - clickhouse
+    environment:
+      CH_HOST: clickhouse
+
+  clickhouse:
+    image: yandex/clickhouse-server
+    restart: always
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      - CLICKHOUSE_USER=username
+      - CLICKHOUSE_PASSWORD=password
