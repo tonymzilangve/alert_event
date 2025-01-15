@@ -6,6 +6,8 @@ services:
     depends_on:
       - clickhouse
     environment:
+      CH_USERNAME: username
+      CH_PASSWORD: password
       CH_HOST: clickhouse
 
   clickhouse:
