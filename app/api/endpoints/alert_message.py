@@ -1,6 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from clickhouse_connect.driver.asyncclient import AsyncClient
+from fastapi.responses import JSONResponse 
 
-from app.api.schemas.alert_message import AlertMessage
+from app.db.database import get_db
 
 
 router = APIRouter(
@@ -10,6 +12,8 @@ router = APIRouter(
 
 
 @router.get("/")
-def fetch_alert_messages() -> list[AlertMessage]:
-    messages = []
-    return messages
+async def fetch_alert_messages(db: AsyncClient = Depends(get_db)) -> list:
+    query = "SELECT * FROM messages"
+    messages = await db.query(query=query)
+    
+    return messages.result_rows
