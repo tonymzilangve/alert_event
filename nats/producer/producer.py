@@ -10,12 +10,9 @@ async def main():
     nats_url = f"nats://{os.getenv("NATS_HOST")}:{os.getenv("NATS_PORT")}"
 
     async with (await nats.connect(servers=[nats_url])) as nc:
-        await nc.publish("alert.joe", b"save")
-        await asyncio.sleep(5)
-        await nc.publish("alert.joe", b"save")
-        await asyncio.sleep(0.1)
-        await nc.publish("alert.joe", b"save")
-        await asyncio.sleep(5)
+        for i in range(30):
+            await nc.publish("alert.joe", b"save")
+            await asyncio.sleep(5)
 
 
 if __name__ == '__main__':
