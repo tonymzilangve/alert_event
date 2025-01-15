@@ -1,3 +1,4 @@
+import json
 import os
 import asyncio
 import nats
@@ -28,23 +29,28 @@ async def get_db() -> AsyncGenerator[AsyncClient, None]:
 
 
 async def save_message(msg: str) -> None:
-    if msg.data.decode() == 'save':
-        name = 'Larus'
-        sensor_id = 'D81'
-        description = 'Shut down'
-        temperature = 99.9
-        
-        save_msg_query = f'''
-        INSERT INTO alert_messages (uuid, name, sensor_id, description, temperature, timestamp)
-        VALUES (generateUUIDv4(), '{name}', '{sensor_id}', '{description}', '{temperature}', now())
-        '''
-        
-        db = await anext(get_db())
+    data = json.loads(msg.data)
+    
+    save_msg_query = f'''
+    INSERT INTO alert_messages (uuid, ts, type, severity, message, source, payload, acknowledged)
+    VALUES (
+        generateUUIDv4(),
+        '{data["ts"]}',
+        '{data["type"]}',
+        '{data["severity"]}',
+        '{data["message"]}',
+        '{data["source"]}',
+        '{data["payload"]}',
+        false
+    )
+    '''
+    
+    db = await anext(get_db())
 
-        try:
-            await db.query(query=save_msg_query)
-        except Exception as e:
-            raise DatabaseError("Failed to save new message!")
+    try:
+        await db.query(query=save_msg_query)
+    except Exception as e:
+        raise DatabaseError("Failed to save new message!")
 
 
 async def main() -> None:
@@ -57,7 +63,6 @@ async def main() -> None:
         while True:
             try:
                 msg = await sub.next_msg()
-                print(f"{msg.data} on subject {msg.subject}")
                 await save_message(msg)
             except TimeoutError:
                 pass
