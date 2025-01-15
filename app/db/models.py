@@ -1,16 +1,18 @@
+drop_table_query = '''
+DROP TABLE IF EXISTS alert_messages
+'''
+
+
 create_table_query = '''
 CREATE TABLE IF NOT EXISTS alert_messages (
     uuid UUID,
-    name String,
-    sensor_id String,
-    description String,
-    temperature Float64,
-    timestamp DateTime
+    ts DateTime,
+    type String,
+    severity String,
+    message String,
+    source String,
+    payload String,
+    acknowledged Boolean DEFAULT false
 ) ENGINE = MergeTree()
-ORDER BY timestamp
-'''
-
-insert_test_data = '''
-INSERT INTO alert_messages (uuid, name, sensor_id, description, temperature, timestamp)
-VALUES (generateUUIDv4(), 'Passer', 'C55', 'Something went wrong!', 66.7, now())
+ORDER BY ts
 '''
