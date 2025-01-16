@@ -54,16 +54,16 @@ async def save_message(msg: str) -> None:
 
 
 async def main() -> None:
-    nats_url = f"nats://{os.getenv("NATS_HOST")}:{os.getenv("NATS_PORT")}"
+    nats_url = f"nats://{os.getenv('NATS_HOST')}:{os.getenv('NATS_PORT')}"
     
     async with (await nats.connect(servers=[nats_url])) as nc:
-
         sub = await nc.subscribe("alert.*")
 
         while True:
             try:
                 msg = await sub.next_msg()
                 await save_message(msg)
+                await asyncio.sleep(0.1)
             except TimeoutError:
                 pass
 

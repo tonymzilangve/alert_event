@@ -7,8 +7,8 @@ create_table_query = '''
 CREATE TABLE IF NOT EXISTS alert_messages (
     uuid UUID,
     ts DateTime,
-    type String,
-    severity String,
+    type Enum('user' = 1, 'device' = 2, 'system' = 3),
+    severity Enum('Critical' = 1, 'Warning' = 2, 'Info' = 3),
     message String,
     source String,
     payload String,

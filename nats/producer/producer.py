@@ -9,7 +9,7 @@ load_dotenv()
 
 
 async def main():
-    nats_url = f"nats://{os.getenv("NATS_HOST")}:{os.getenv("NATS_PORT")}"
+    nats_url = f"nats://{os.getenv('NATS_HOST')}:{os.getenv('NATS_PORT')}"
 
     message_data = {
         "ts": datetime.now(),
