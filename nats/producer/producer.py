@@ -1,9 +1,11 @@
+import asyncio
 import json
 import os
-import asyncio
-import nats
 from datetime import datetime
+
 from dotenv import load_dotenv
+
+import nats
 
 load_dotenv()
 
@@ -19,12 +21,12 @@ async def main():
         "source": "Sensor V-55",
         "payload": json.dumps({"some": "data"}),
     }
-    
-    async with (await nats.connect(servers=[nats_url])) as nc:
+
+    async with await nats.connect(servers=[nats_url]) as nc:
         for i in range(30):
             await nc.publish("alert.joe", json.dumps(message_data, default=str).encode())
             await asyncio.sleep(5)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(main())
