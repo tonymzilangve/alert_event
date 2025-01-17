@@ -1,13 +1,12 @@
-import uvicorn
+from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from contextlib import asynccontextmanager
+import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from app.api.endpoints.alert_message import router
 from app.db.database import create_table
-
 
 load_dotenv()
 

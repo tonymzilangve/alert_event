@@ -12,13 +12,13 @@ async def get_db() -> AsyncGenerator[AsyncClient, None]:
     db = await get_async_client(
         username=os.getenv("CH_USERNAME"),
         password=os.getenv("CH_PASSWORD"),
-        host=os.getenv("CH_HOST")
+        host=os.getenv("CH_HOST"),
     )
 
     try:
         yield db
     finally:
-        db.close()  
+        db.close()
 
 
 async def create_table() -> None:
@@ -27,5 +27,5 @@ async def create_table() -> None:
     try:
         await db.query(query=drop_table_query)
         await db.query(query=create_table_query)
-    except Exception as e:
+    except Exception:
         raise DatabaseError("Failed to create table!")
