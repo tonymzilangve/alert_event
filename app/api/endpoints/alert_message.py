@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from clickhouse_connect.driver.asyncclient import AsyncClient
 from fastapi import APIRouter, Depends
 from fastapi_filter import FilterDepends
@@ -15,6 +17,8 @@ async def convert_query_data(data: list[tuple]) -> list[dict]:
     for row in data.result_rows:
         converted_data.append(dict(zip(data.column_names, row)))
 
+    if len(converted_data) == 1:
+        return converted_data[0]
     return converted_data
 
 
@@ -59,6 +63,19 @@ async def fetch_alert_messages(
 
     params = Params(size=size, page=page)
     return paginate(messages, params)
+
+
+@router.patch("/{uuid}/confirm")
+async def confirm_alert_message(
+    uuid: UUID,
+    acknowledged: bool,
+    db: AsyncClient = Depends(get_db),
+) -> dict:
+    query = f"ALTER TABLE alert_messages UPDATE acknowledged = {acknowledged} WHERE uuid = '{uuid}'"
+    await db.query(query=query)
+
+    updated_message = {"uuid": uuid, "acknowledged": acknowledged}
+    return updated_message
 
 
 add_pagination(router)
