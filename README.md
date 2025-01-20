@@ -13,6 +13,10 @@ $ make build
 ```bash
 $ make run
 ```
+### Run tests:
+```bash
+$ make test
+```
 ### Run full code check:
 ```bash
 $ make lint

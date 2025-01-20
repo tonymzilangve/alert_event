@@ -20,8 +20,6 @@ async def convert_query_data(data: list[tuple]) -> list[dict]:
     for row in data.result_rows:
         converted_data.append(dict(zip(data.column_names, row)))
 
-    if len(converted_data) == 1:
-        return converted_data[0]
     return converted_data
 
 

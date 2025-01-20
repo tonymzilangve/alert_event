@@ -4,6 +4,9 @@ build:
 run:
 	docker-compose up
 
+test:
+	pytest -vv
+
 lint: check_format ruff
 
 check_format:
