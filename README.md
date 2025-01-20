@@ -4,12 +4,16 @@
 ### STACK
 `FastAPI  | ClickHouse | NATS | Docker` 
 
-## Common docker commands
+## Common commands
 ### Build the images:
 ```bash
-$ docker-compose build
+$ make build
 ```
 ### Run the containers:
 ```bash
-$ docker-compose up -d
+$ make run
+```
+### Run tests:
+```bash
+$ make test
 ```
