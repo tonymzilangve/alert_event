@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import AsyncGenerator
 
@@ -7,8 +8,11 @@ from clickhouse_connect.driver.exceptions import DatabaseError
 
 from .models import create_table_query, drop_table_query
 
+logger = logging.getLogger(__name__)
+
 
 async def get_db() -> AsyncGenerator[AsyncClient, None]:
+    logger.info("Connecting to Clickhouse database...")
     db = await get_async_client(
         username=os.getenv("CH_USERNAME"),
         password=os.getenv("CH_PASSWORD"),
@@ -25,6 +29,7 @@ async def create_table() -> None:
     db = await anext(get_db())
 
     try:
+        logger.info("Creating DB table...")
         await db.query(query=drop_table_query)
         await db.query(query=create_table_query)
     except Exception:

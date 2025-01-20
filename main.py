@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -9,6 +10,12 @@ from app.api.endpoints.alert_message import router
 from app.db.database import create_table
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format="#%(levelname)s [%(asctime)s] - %(filename)s:%(lineno)d - %(message)s",
+)
 
 
 @asynccontextmanager

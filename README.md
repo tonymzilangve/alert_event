@@ -17,3 +17,11 @@ $ make run
 ```bash
 $ make test
 ```
+### Run full code check:
+```bash
+$ make lint
+```
+### Apply linter changes:
+```bash
+$ make format_code
+```
