@@ -1,0 +1,55 @@
+services:
+  api:
+    build: .
+    ports:
+      - "80:80"
+    depends_on:
+      - clickhouse
+    environment:
+      CH_USERNAME: username
+      CH_PASSWORD: password
+      CH_HOST: clickhouse
+      NATS_HOST: nats-plain
+      NATS_PORT: 4222
+
+  clickhouse:
+    image: yandex/clickhouse-server
+    restart: always
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      - CLICKHOUSE_USER=username
+      - CLICKHOUSE_PASSWORD=password
+
+  consumer:
+    build:
+      context: ./
+      dockerfile: ./nats_mq/consumer/Dockerfile
+    depends_on:
+      - api
+      - nats-plain
+      - clickhouse
+    environment:
+      CH_USERNAME: username
+      CH_PASSWORD: password
+      CH_HOST: clickhouse
+      NATS_HOST: nats-plain
+      NATS_PORT: 4222
+    command: python -m nats_mq.consumer.consumer
+
+  producer:
+    build:
+      context: ./
+      dockerfile: ./nats_mq/producer/Dockerfile
+    depends_on:
+      - nats-plain
+    environment:
+      NATS_HOST: nats-plain
+      NATS_PORT: 4222
+    command: python -m nats_mq.producer.producer
+
+  nats-plain:
+    image: nats:2-alpine
+    ports:
+      - 4222:4222
