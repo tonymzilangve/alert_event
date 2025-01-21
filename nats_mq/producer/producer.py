@@ -1,24 +1,22 @@
 import asyncio
 import json
 import logging
-import os
 from datetime import datetime
-
-from dotenv import load_dotenv
 
 import nats
 
-load_dotenv()
+from config import settings
+
 logger = logging.getLogger(__name__)
 
 
 async def main():
-    nats_url = f"nats://{os.getenv('NATS_HOST')}:{os.getenv('NATS_PORT')}"
+    nats_url = f"nats://{settings.NATS_HOST}:{settings.NATS_PORT}"
 
     message_data = {
         "ts": datetime.now(),
         "type": "device",
-        "severity": "Warning",
+        "severity": "warning",
         "message": "Something went wrong!",
         "source": "Sensor V-55",
         "payload": json.dumps({"some": "data"}),

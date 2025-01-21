@@ -3,13 +3,10 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 import uvicorn
-from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from app.api.endpoints.alert_message import router
 from app.db.database import create_table
-
-load_dotenv()
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(

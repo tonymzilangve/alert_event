@@ -33,11 +33,11 @@ class AlertMessageFilter(BaseFilterModel):
         filters = []
 
         if self.type:
-            filters.append(f"(type = '{self.type}')")
+            filters.append(f"(type = '{self.type.value}')")
         if self.severity:
-            filters.append(f"(severity = '{self.severity}')")
-        if self.acknowledged:
-            filters.append(f"(acknowledged ='{int(self.acknowledged)}')")
+            filters.append(f"(severity = '{self.severity.value}')")
+        if self.acknowledged is not None:
+            filters.append(f"(acknowledged = '{int(self.acknowledged)}')")
 
         if filters:
             sep = " AND "
