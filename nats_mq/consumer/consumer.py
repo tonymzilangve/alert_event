@@ -1,27 +1,25 @@
 import asyncio
 import json
 import logging
-import os
 from typing import AsyncGenerator
 
+import nats
 from clickhouse_connect import get_async_client
 from clickhouse_connect.driver.asyncclient import AsyncClient
 from clickhouse_connect.driver.exceptions import DatabaseError
-from dotenv import load_dotenv
-
-import nats
 from nats.errors import TimeoutError
 
-load_dotenv()
+from config import settings
+
 logger = logging.getLogger(__name__)
 
 
 async def get_db() -> AsyncGenerator[AsyncClient, None]:
     logger.info("Connecting to Clickhouse database...")
     db = await get_async_client(
-        username=os.getenv("CH_USERNAME"),
-        password=os.getenv("CH_PASSWORD"),
-        host=os.getenv("CH_HOST"),
+        username=settings.CH_USERNAME,
+        password=settings.CH_PASSWORD,
+        host=settings.CH_HOST,
     )
 
     try:
@@ -34,7 +32,7 @@ async def save_message(msg: str) -> None:
     data = json.loads(msg.data)
 
     save_msg_query = f"""
-    INSERT INTO alert_messages (uuid, ts, type, severity, message, source, payload, acknowledged)
+    INSERT INTO alert_messages
     VALUES (
         generateUUIDv4(),
         '{data["ts"]}',
@@ -43,7 +41,7 @@ async def save_message(msg: str) -> None:
         '{data["message"]}',
         '{data["source"]}',
         '{data["payload"]}',
-        false
+        NULL
     )
     """
 
@@ -57,7 +55,7 @@ async def save_message(msg: str) -> None:
 
 
 async def main() -> None:
-    nats_url = f"nats://{os.getenv('NATS_HOST')}:{os.getenv('NATS_PORT')}"
+    nats_url = f"nats://{settings.NATS_HOST}:{settings.NATS_PORT}"
 
     async with await nats.connect(servers=[nats_url]) as nc:
         logger.info("Subscribing to [alert] topic...")

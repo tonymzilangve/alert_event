@@ -12,9 +12,9 @@ class AlertMessage(BaseModel):
         SYSTEM = "system"
 
     class Severities(str, Enum):
-        CRITICAL = "Critical"
-        WARNING = "Warning"
-        INFO = "Info"
+        CRITICAL = "critical"
+        WARNING = "warning"
+        INFO = "info"
 
     uuid: UUID
     ts: datetime
